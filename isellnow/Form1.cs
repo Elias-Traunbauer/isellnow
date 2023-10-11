@@ -47,7 +47,7 @@ namespace isellnow
             if (e.Button == MouseButtons.Left)
             {
                 sellButtonLocations.Add(new Point(e.X, e.Y));
-                if (sellButtonLocations.Count == sellCount)
+                if (sellButtonLocations.Count == sellCount * 2)
                 {
                     settingUpSellButtons = false;
                     UpdateUIEnabledStates();
@@ -256,6 +256,8 @@ namespace isellnow
             running = true;
             paused = false;
             UpdateUIEnabledStates();
+            Thread thread = new Thread(ThreadClicky);
+            thread.Start();
         }
 
         private void BtnStop_Click(object sender, EventArgs e)
@@ -263,6 +265,47 @@ namespace isellnow
             running = false;
             paused = false;
             UpdateUIEnabledStates();
+        }
+        
+        private void ThreadClicky()
+        {
+            while (running)
+            {
+                Thread.Sleep(300);
+
+                // click on rust at sellpoints
+                // params mean:
+                // 
+
+                for (int i = 0; i < sellButtonLocations.Count; i+=2)
+                {
+                    // enter amount
+                    Cursor.Position = sellButtonLocations[i + 1];
+                    Win32.SendMessage((int)rustWindowHandle, Win32.WM_LBUTTONDOWN, 0x00000001, (int)CreateLParam(sellButtonLocations[i + 1].X, sellButtonLocations[i + 1].Y));
+                    Thread.Sleep(20);
+                    Win32.SendMessage((int)rustWindowHandle, Win32.WM_LBUTTONUP, 0x00000000, (int)CreateLParam(sellButtonLocations[i + 1].X, sellButtonLocations[i + 1].Y));
+                    Thread.Sleep(50);
+                    
+                    SendKeys.SendWait("20");
+                    Thread.Sleep(30);
+
+                    // buy
+                    Cursor.Position = sellButtonLocations[i];
+                    Win32.SendMessage((int)rustWindowHandle, Win32.WM_LBUTTONDOWN, 0x00000001, (int)CreateLParam(sellButtonLocations[i].X, sellButtonLocations[i].Y));
+                    Thread.Sleep(20);
+                    Win32.SendMessage((int)rustWindowHandle, Win32.WM_LBUTTONUP, 0x00000000, (int)CreateLParam(sellButtonLocations[i].X, sellButtonLocations[i].Y));
+
+                    while (paused && running)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+            }
+        }
+
+        private static IntPtr CreateLParam(int LoWord, int HiWord)
+        {
+            return (IntPtr)((HiWord << 16) | (LoWord & 0xffff));
         }
     }
 }
