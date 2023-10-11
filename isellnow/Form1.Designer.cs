@@ -208,7 +208,7 @@
             btnSetupSellButtons.Name = "btnSetupSellButtons";
             btnSetupSellButtons.Size = new Size(173, 31);
             btnSetupSellButtons.TabIndex = 0;
-            btnSetupSellButtons.Text = "Setup Sell Buttons";
+            btnSetupSellButtons.Text = "Setup sell buttons";
             btnSetupSellButtons.UseVisualStyleBackColor = true;
             btnSetupSellButtons.Click += BtnSetupSellButtons_Click;
             // 
@@ -253,6 +253,7 @@
             Controls.Add(groupBoxMain);
             Controls.Add(btnCommitSettings);
             Controls.Add(groupBoxSettings);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "Form_isellnow";
             Text = "isellnow";
             Load += Form_isellnow_Load;
